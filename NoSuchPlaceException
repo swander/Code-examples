@@ -1,0 +1,9 @@
+public class NoSuchPlaceException extends Exception {
+	
+	private String city;
+	
+	public NoSuchPlaceException(String city){
+		super(city);
+		this.city = city;
+	}
+}
