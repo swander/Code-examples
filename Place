@@ -1,4 +1,4 @@
-package ExOne;
+package exOne;
 
 import ExOne.NoSuchPlaceException;
 
