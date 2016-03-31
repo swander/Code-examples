@@ -1,0 +1,52 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.util.Scanner;
+public class DondeUtilities {
+	
+	public static PlacesCache readCSV(File file) throws FileNotFoundException, URISyntaxException, IOException  {
+		PlacesCache places = new PlacesCache();
+		String[] split = new String[(file.toString()).length()];
+		Scanner scan = new Scanner(file).useDelimiter("\\Z");
+		try{
+			while (scan.hasNext()) {
+				String scannerString = scan.nextLine();
+				split = scannerString.split("\\|", -1);
+				String person = split[0];
+				String city = split[1];
+				for(int i = -1; i<places.size();i++){
+    
+					Place newPlaces = places.getPlace(city);
+    
+					newPlaces.addPerson(person);
+				}
+			}
+		}
+		catch(NoSuchPlaceException exception){
+			System.out.println("No such location");
+		}
+		return places;
+  
+  
+	}
+ public static void writeKML(PlacesCache places, File file) throws FileNotFoundException {
+  
+	 PrintWriter out = new PrintWriter(file);
+  
+	 String enter = String.format("%n");
+  
+	 out.print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + enter
+			 + "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" + enter
+			 + "<Document>" + enter + "<name>Donde</name>" + enter);
+	 for (int i = 0; i < places.size(); i++) {
+   
+		 out.println(places.get(i).toKML());
+	 }
+	 out.println("</Document>" + enter + "</kml>");
+	 out.close();
+ 	}
+ 	public static void main(String[] args) {
+ 	}
+	}
