@@ -1,4 +1,4 @@
-import hw7.NoSuchPlaceException;
+import ExOne.NoSuchPlaceException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
