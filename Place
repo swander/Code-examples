@@ -1,0 +1,112 @@
+import hw7.NoSuchPlaceException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+
+public class Place {
+	 
+	 private String name;
+	 private double latitude;
+	 private double longitude;
+	 private Set people;
+
+	 public Place(String name, double latitude, double longitude) {
+		 this.name = name;
+		 this.latitude = latitude;
+		 this.longitude = longitude;
+		 this.people = new Set();
+	 }
+
+	 public String getName() {
+		 return name;
+	 }
+
+	 private void setName(String name) {
+		 this.name = name;
+	 }
+
+	 private void setLatitude(double latitude) {
+		 this.latitude = latitude;
+	 }
+
+	 private void setLongitude(double longitude) {
+		 this.longitude = longitude;
+	 }
+
+	 public double getLatitude() {
+		 return latitude;
+	 }
+
+	 public double getLongitude() {
+		 return longitude;
+	 }
+
+	 public URL toGeocodeURL() throws MalformedURLException, URISyntaxException {
+		  URI uri = new URI("http", "www.twodee.org", "/teaching/cs145/2015c/homework/hw7/geocode.php",
+				  "place=" + getName(), null);
+		  URL url = uri.toURL();
+		  return url;
+		 }
+	 
+	 public Place(String city) throws NoSuchPlaceException, URISyntaxException, IOException {
+		 
+		 this.name = city;
+		 URL url = this.toGeocodeURL();
+		 WebUtilities wB = new WebUtilities();
+		  
+		 String latLongitude = wB.slurpURL(url);
+		 boolean checkthis = false;
+		 try {
+		 checkthis = !((Double) Double.parseDouble((latLongitude.substring(0, latLongitude.indexOf(' '))))).isNaN();
+		  
+		 } catch (NumberFormatException x) {
+		 checkthis = false;
+		 }
+		  
+		 if ((latLongitude.indexOf('.') != -1) && checkthis != false) {
+		  
+		 String newLat = latLongitude.substring(0, (latLongitude.indexOf(' ')));
+		 String newLong = latLongitude.substring(latLongitude.indexOf(' '), latLongitude.length());
+		 double newLat2 = Double.parseDouble(newLat);
+		 double newLong2 = Double.parseDouble(newLong);
+		 this.latitude = Double.parseDouble(String.format("%.6f", newLat2));
+		 this.longitude = Double.parseDouble(String.format("%.6f", newLong2));
+		 } else {
+		 throw new NoSuchPlaceException(name);
+		 }
+		  
+		 this.people = new Set();
+		  
+		 }
+
+	 public void addPerson(String string) {
+		 this.people.add(string);
+	 }
+
+	 public String toKML() {
+		 String newLine = String.format("%n");
+		 String string = "<Placemark>" + newLine + "<name>" + this.name + "</name>" + newLine + "<description>"
+		 + this.people.toString() + "</description>" + newLine + "<Point><coordinates>" + String.format("%.2f", this.longitude) + ","
+	     + String.format("%.2f",this.latitude) + "</coordinates></Point>" + newLine + "</Placemark>";
+
+		 return string;
+	 }
+
+	 public static void main(String[] args) {
+
+	 }
+
+	 private Set getPeople() {
+		 return people;
+	 }
+
+	 private void setPeople(Set people) {
+		 this.people = people;
+	 }
+}
