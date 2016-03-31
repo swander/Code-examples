@@ -1,3 +1,4 @@
+ExOne package;
 public class NoSuchPlaceException extends Exception {
 	
 	private String city;
