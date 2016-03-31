@@ -1,4 +1,4 @@
-package ExOne;
+package exOne;
 
 public class NoSuchPlaceException extends Exception {
 	
